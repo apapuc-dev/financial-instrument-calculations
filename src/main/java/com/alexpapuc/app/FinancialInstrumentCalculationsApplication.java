@@ -40,14 +40,13 @@ public class FinancialInstrumentCalculationsApplication implements CommandLineRu
         if (args.length > 0) {
 
             try {
-                instrumentFileReader.openFile(args[0])
+                instrumentFileReader.openFileStream(args[0])
                     .map(instrumentParser::parse)
                     .filter(instrumentFilter::filterNonBusinessDate)
                     .forEach(calculationsService::addDataPoint);
 
                 calculationsService.logFinalResults();
                 instrumentFileReader.close();
-
 
             } catch (FileNotFoundException e) {
                 log.error(e.getMessage(), e);
