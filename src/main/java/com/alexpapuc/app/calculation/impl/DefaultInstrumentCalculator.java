@@ -3,7 +3,7 @@ package com.alexpapuc.app.calculation.impl;
 import com.alexpapuc.app.calculation.InstrumentCalculator;
 import com.alexpapuc.app.model.InstrumentPricePoint;
 import com.alexpapuc.app.model.PricePoint;
-import com.alexpapuc.app.model.SortedLinkedList;
+import com.alexpapuc.app.utils.SortedLinkedList;
 
 import java.time.LocalDate;
 import java.util.LinkedList;

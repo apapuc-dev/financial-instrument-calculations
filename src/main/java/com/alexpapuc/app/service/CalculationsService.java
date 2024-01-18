@@ -50,7 +50,6 @@ public class CalculationsService {
         if (instrumentCalculatorMap.containsKey(instrumentName)) {
             InstrumentCalculator instrumentCalculator = instrumentCalculatorMap.get(instrumentName);
             double multiplier = instrumentPriceModifierService.getMultiplier(instrumentName);
-//            log.info("Found multiplier ({}) for the instrument {}", multiplier, instrumentName);
 
             return instrumentCalculator.getFinalResult() * multiplier;
         }

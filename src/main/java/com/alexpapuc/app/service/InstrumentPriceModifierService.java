@@ -29,13 +29,6 @@ public class InstrumentPriceModifierService {
     }
 
     public double getMultiplier(String name) {
-
-//        Optional<InstrumentPriceModifierEntity> entity = repository.findByName(INSTRUMENT_2.name());
-//        log.info("For instrument 2 ({}) we have multiplier present: {}", INSTRUMENT_2.name(), entity.isPresent());
-//
-//        entity.ifPresent(x -> log.info("Entity multiplier = {}", x.getMultiplier()));
-//
-//        log.info("Getting price modifier for instrument {}", name);
         return repository.findByName(name)
                 .map(InstrumentPriceModifierEntity::getMultiplier)
                 .orElse(1.0);
