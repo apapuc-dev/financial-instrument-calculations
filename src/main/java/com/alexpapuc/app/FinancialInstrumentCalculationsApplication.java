@@ -9,12 +9,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.io.FileNotFoundException;
 
 @SpringBootApplication
 @AutoConfiguration
 @Slf4j
+@EnableJpaRepositories(basePackages = "com.alexpapuc.app.repository")
 public class FinancialInstrumentCalculationsApplication implements CommandLineRunner {
 
     private final InstrumentFileReaderService instrumentFileReader;

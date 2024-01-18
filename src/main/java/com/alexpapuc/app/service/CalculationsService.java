@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -17,11 +18,13 @@ import java.util.stream.Collectors;
 public class CalculationsService {
 
     private final Map<String, InstrumentCalculator> instrumentCalculatorMap;
+    private final InstrumentPriceModifierService instrumentPriceModifierService;
 
-    public CalculationsService(List<InstrumentCalculatorWithSupport> instrumentCalculatorList) {
+    public CalculationsService(List<InstrumentCalculatorWithSupport> instrumentCalculatorList, InstrumentPriceModifierService instrumentPriceModifierService) {
         instrumentCalculatorMap = instrumentCalculatorList.stream()
                 .collect(Collectors.toMap(
                         instrument -> instrument.getSupportedInstrument().name, x -> x));
+        this.instrumentPriceModifierService = instrumentPriceModifierService;
     }
 
     public void addDataPoint(InstrumentPricePoint pricePoint) {
@@ -37,11 +40,20 @@ public class CalculationsService {
     }
 
     public void logFinalResults() {
-        log.info("Results:");
-        instrumentCalculatorMap.entrySet().forEach(this::logFinalResult);
+        log.info("Results {}:", instrumentCalculatorMap.entrySet().size());
+
+        instrumentCalculatorMap.keySet()
+                .forEach(name -> log.info("{}: {}", name, getFinalResult(name)));
     }
 
-    private void logFinalResult(Map.Entry<String, InstrumentCalculator> entry) {
-        log.info("{}: {}", entry.getKey(), entry.getValue().getFinalResult());
+    public double getFinalResult(String instrumentName) {
+        if (instrumentCalculatorMap.containsKey(instrumentName)) {
+            InstrumentCalculator instrumentCalculator = instrumentCalculatorMap.get(instrumentName);
+            double multiplier = instrumentPriceModifierService.getMultiplier(instrumentName);
+//            log.info("Found multiplier ({}) for the instrument {}", multiplier, instrumentName);
+
+            return instrumentCalculator.getFinalResult() * multiplier;
+        }
+        throw new NoSuchElementException(String.format("Instrument '%s' was not found", instrumentName));
     }
 }

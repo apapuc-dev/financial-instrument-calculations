@@ -2,26 +2,37 @@ package com.alexpapuc.app.calculation.impl;
 
 import com.alexpapuc.app.calculation.InstrumentCalculator;
 import com.alexpapuc.app.model.InstrumentPricePoint;
+import com.alexpapuc.app.model.PricePoint;
+import com.alexpapuc.app.model.SortedLinkedList;
 
 import java.time.LocalDate;
-import java.time.Month;
+import java.util.LinkedList;
 
 public class DefaultInstrumentCalculator implements InstrumentCalculator {
-    private double priceSum = 0;
-    private int instrumentsCount = 0;
+
+    private final LinkedList<PricePoint> newest10ElementsList;
+
+    public DefaultInstrumentCalculator() {
+        this.newest10ElementsList = new SortedLinkedList<>();
+    }
 
     @Override
     public void addDataPoint(InstrumentPricePoint instrumentPricePoint) {
         LocalDate date = instrumentPricePoint.date();
 
-        if (date.getMonth().equals(Month.SEPTEMBER) && date.getYear() == 2014) {
-            priceSum += instrumentPricePoint.price();
-            instrumentsCount++;
+        if (newest10ElementsList.getFirst().date().isBefore(date)) {
+            newest10ElementsList.add(new PricePoint(date, instrumentPricePoint.price()));
+
+            if (newest10ElementsList.size() > 10) {
+                newest10ElementsList.removeFirst();
+            }
         }
     }
 
     @Override
     public double getFinalResult() {
-        return priceSum / instrumentsCount;
+        return newest10ElementsList.stream()
+                .mapToDouble(PricePoint::price)
+                .sum();
     }
 }
