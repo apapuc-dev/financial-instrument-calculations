@@ -1,9 +1,8 @@
-package com.alexpapuc.app.model;
+package com.alexpapuc.app.utils;
 
 import java.util.LinkedList;
 
 public class SortedLinkedList<T extends Comparable<T>> extends LinkedList<T> {
-
     @Override
     public boolean add(T element) {
         if (isEmpty() || element.compareTo(getFirst()) <= 0) {
